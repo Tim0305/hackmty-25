@@ -6,15 +6,15 @@ function VideoStreamClient() {
   const [imageData, setImageData] = useState(null);
   const [stats, setStats] = useState("Conectando al servidor...");
   const [connected, setConnected] = useState(false);
-  const [statusColor, setStatusColor] = useState("text-slate-800"); // Tailwind class
+  const [statusColor, setStatusColor] = useState("text-slate-700");
 
   useEffect(() => {
-    const BACKEND_IP = "10.22.186.200";
+    const BACKEND_IP = "10.22.186.200"; // <-- Coloca aquí tu IP del servidor backend
     const PORT = 5001;
     const socket = io(`http://${BACKEND_IP}:${PORT}`);
 
     socket.on("connect", () => {
-      setStats("Conectado. Esperando datos...");
+      setStats("✅ Conectado. Esperando datos...");
       setConnected(true);
     });
 
@@ -22,13 +22,14 @@ function VideoStreamClient() {
       if (data.image_data) setImageData(data.image_data);
       if (data.stats) setStats(data.stats);
 
-      // Cambia el color según status_color
+      // Cambia color dinámico
       if (data.status_color === "rojo") setStatusColor("text-red-600");
-      else setStatusColor("text-black");
+      else if (data.status_color === "verde") setStatusColor("text-green-600");
+      else setStatusColor("text-slate-700");
     });
 
     socket.on("disconnect", () => {
-      setStats("Error: Desconectado del servidor.");
+      setStats("❌ Desconectado del servidor.");
       setConnected(false);
       setStatusColor("text-red-600");
     });
@@ -37,51 +38,46 @@ function VideoStreamClient() {
   }, []);
 
   return (
-    <div className="flex min-h-screen p-6 gap-6 bg-white font-roboto">
-      {/* Columna izquierda: Cámara */}
-      <div className="w-3/4 flex flex-col items-center justify-center bg-white rounded-2xl shadow-lg p-4">
-        <h2 className="text-gray-900 text-3xl font-bold mb-4">
-          Proyección de la cámara
-        </h2>
-        <div className="overflow-hidden rounded-xl w-full max-h-[80vh]">
+    <div className="min-h-screen flex flex-col lg:flex-row items-center justify-center gap-10 p-8 bg-white from-slate-50 via-slate-100 to-slate-300 font-roboto transition-all duration-700">
+      {/* Contenedor de la cámara */}
+      <div className="flex flex-col items-center justify-center bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl w-full lg:w-3/4 p-6 lg:p-10 border border-slate-200">
+        
+
+        <div className="overflow-hidden rounded-3xl w-full max-h-[75vh] shadow-lg border border-slate-200 transition-all duration-500 hover:scale-[1.01] hover:shadow-xl">
           <img
-            src={imageData ? `data:image/jpeg;base64,${imageData}` : ""}
-            alt={connected ? "Esperando stream..." : "Desconectado"}
-            className="w-full h-auto object-cover transition-transform duration-500 ease-in-out hover:scale-105"
+            src={imageData ? `data:image/jpeg;base64,${imageData}` : "https://placehold.co/800x600?text=Esperando+stream..."}
+            alt={connected ? "Stream activo" : "Desconectado"}
+            className="w-full h-auto object-cover"
           />
         </div>
+
         {!imageData && connected && (
-          <p className="text-gray-500 mt-3 italic">
-            Esperando frames del servidor...
+          <p className="text-slate-500 mt-4 italic text-lg animate-pulse">
+            ⏳ Recibiendo frames del servidor...
           </p>
         )}
       </div>
 
-<<<<<<< HEAD
-      {/* Columna derecha: Mensaje de error */}
-      <div className="w-1/4 flex flex-col items-center justify-center bg-white rounded-2xl shadow-md p-6 text-center">
-        <h2 className="text-slate-950 text-4xl font-bold mb-4 animate-pulse">
-          ¡Error!
-        </h2>
-        <p className="text-black text-2xl mb-6 font-semibold">
-          Faltan 2 canelitas
-        </p>
-        <p className={`font-mono ${statusColor} text-lg`}>{stats}</p>
-=======
-        {/* Imagen centrada */}
-        <div className="flex justify-center mb-6 lg:mb-8">
-          <img
-            className="w-full max-w-lg h-auto rounded-lg shadow-md object-contain"
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsB8NKORD4j_knDUWeGVucC3wxIgXBlMu0Pw&s"
-            alt="Vista cámara"
-          />
+      {/* Panel lateral */}
+      <div className="w-full lg:w-1/4 bg-white/90 backdrop-blur-lg shadow-xl rounded-3xl p-8 flex flex-col items-center justify-center border border-slate-200 hover:shadow-2xl transition-all duration-500">
+        <h3 className="text-2xl font-semibold text-slate-800 mb-4">
+          Estado del sistema
+        </h3>
+
+        <div className={`font-mono ${statusColor} text-lg text-center transition-all duration-300`}>
+          {stats}
         </div>
 
-        {/* Texto de error debajo de la imagen */}
-        <div className="text-center text-red-600 font-semibold text-lg md:text-xl lg:text-2xl mt-4 lg:mt-6">
-          <p>Falta 1 paquete</p>
-        </div>
->>>>>>> 4b4afb05353b4a6fce0e7d8b7b352fd8917605de
+        {/* Indicador de conexión */}
+        <div
+          className={`mt-6 w-4 h-4 rounded-full ${
+            connected ? "bg-green-500 animate-pulse" : "bg-red-500"
+          }`}
+        ></div>
+
+        <p className="mt-2 text-sm text-slate-500">
+          {connected ? "Conectado al servidor" : "Sin conexión"}
+        </p>
       </div>
     </div>
   );
