@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 import "@fontsource/roboto";
 
@@ -8,8 +8,19 @@ function VideoStreamClient() {
   const [connected, setConnected] = useState(false);
   const [statusColor, setStatusColor] = useState("text-slate-700");
 
+  // Guarda el color anterior para detectar cambios
+  const prevStatusColor = useRef("text-slate-700");
+
+  // 🔊 Función para reproducir un sonido de alerta
+  const playAlertSound = () => {
+    const audio = new Audio("/alarm.mp3"); // Archivo en /public
+    audio.play().catch((err) =>
+      console.log("No se pudo reproducir el sonido:", err)
+    );
+  };
+
   useEffect(() => {
-    const BACKEND_IP = "10.22.186.200"; // <-- Coloca aquí tu IP del servidor backend
+    const BACKEND_IP = "10.22.186.200"; // <-- Tu IP del backend
     const PORT = 5001;
     const socket = io(`http://${BACKEND_IP}:${PORT}`);
 
@@ -22,10 +33,22 @@ function VideoStreamClient() {
       if (data.image_data) setImageData(data.image_data);
       if (data.stats) setStats(data.stats);
 
-      // Cambia color dinámico
-      if (data.status_color === "rojo") setStatusColor("text-red-600");
-      else if (data.status_color === "verde") setStatusColor("text-green-600");
-      else setStatusColor("text-slate-700");
+      let newColor = "text-slate-700";
+
+      if (data.status_color === "rojo") newColor = "text-red-600";
+      else if (data.status_color === "verde") newColor = "text-green-600";
+
+      // 🚨 Solo reproducir si el color cambia de otro a "rojo"
+      if (
+        newColor === "text-red-600" &&
+        prevStatusColor.current !== "text-red-600"
+      ) {
+        playAlertSound();
+      }
+
+      // Actualiza el color actual y el anterior
+      setStatusColor(newColor);
+      prevStatusColor.current = newColor;
     });
 
     socket.on("disconnect", () => {
@@ -41,11 +64,13 @@ function VideoStreamClient() {
     <div className="min-h-screen flex flex-col lg:flex-row items-center justify-center gap-10 p-8 bg-white from-slate-50 via-slate-100 to-slate-300 font-roboto transition-all duration-700">
       {/* Contenedor de la cámara */}
       <div className="flex flex-col items-center justify-center bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl w-full lg:w-3/4 p-6 lg:p-10 border border-slate-200">
-        
-
         <div className="overflow-hidden rounded-3xl w-full max-h-[75vh] shadow-lg border border-slate-200 transition-all duration-500 hover:scale-[1.01] hover:shadow-xl">
           <img
-            src={imageData ? `data:image/jpeg;base64,${imageData}` : "https://placehold.co/800x600?text=Esperando+stream..."}
+            src={
+              imageData
+                ? `data:image/jpeg;base64,${imageData}`
+                : "https://placehold.co/800x600?text=Esperando+stream..."
+            }
             alt={connected ? "Stream activo" : "Desconectado"}
             className="w-full h-auto object-cover"
           />
@@ -64,11 +89,12 @@ function VideoStreamClient() {
           Estado del sistema
         </h3>
 
-        <div className={`font-mono ${statusColor} text-lg text-center transition-all duration-300`}>
+        <div
+          className={`font-mono ${statusColor} text-lg text-center transition-all duration-300`}
+        >
           {stats}
         </div>
 
-        {/* Indicador de conexión */}
         <div
           className={`mt-6 w-4 h-4 rounded-full ${
             connected ? "bg-green-500 animate-pulse" : "bg-red-500"
