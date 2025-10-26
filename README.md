@@ -1,4 +1,5 @@
 # 🧠 Smart Check  
+![logo](https://github.com/user-attachments/assets/e286a655-1105-42b3-832d-f2bf06e79532)
 
 ## 🚀 Overview  
 **Smart Check** is an intelligent system that automates product detection in food *trolleys* used on **airplanes, trains, and other transportation environments**.  
