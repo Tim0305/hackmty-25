@@ -1,16 +1,41 @@
-# React + Vite
+# 🧠 Smart Check  
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🚀 Overview  
+**Smart Check** is an intelligent system that automates product detection in food *trolleys* used on **airplanes, trains, and other transportation environments**.  
 
-Currently, two official plugins are available:
+The project combines **computer vision** and an **interactive web interface** to optimize inventory, verification, and control processes quickly and accurately.  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## ⚙️ Technologies Used  
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 🔩 Back-end  
+- **Python**  
+- **PyTorch**  
+- **YOLOv8**  
+- **Roboflow**  
 
-## Expanding the ESLint configuration
+The back-end handles **object detection** using a computer vision model trained to identify products in captured images.  
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 💻 Front-end  
+- **React**  
+- **JavaScript**  
+
+The front-end provides a modern and responsive interface for displaying detection results and managing processed data.  
+
+---
+
+## Project Structure  
+The repository is organized into two main branches:  
+
+- **`main`** → Contains all the **front-end code** (user interface).  
+- **`back`** → Contains the **object detection logic** and the **computer vision model**.  
+
+---
+
+## 🧩 Installation  
+
+### 1️⃣ Clone the repository  
+```bash
+git clone https://github.com/yourusername/smart-check.git
+cd smart-check
