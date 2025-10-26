@@ -3,6 +3,7 @@ import Employees from "./pages/Employees";
 import Products from "./pages/Products";
 import Manager from "./pages/Manager";
 import LogIn from "./pages/LogIn";
+import VideoStreamClient from "./pages/User";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/manager/employees" element={<Employees />} />
         <Route path="/manager/products" element={<Products />} />
 
+        <Route path="/user" element={<VideoStreamClient />} />
         {/* Redirección por defecto */}
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
