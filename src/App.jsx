@@ -1,13 +1,9 @@
-import Errores from './Errores'
-import LogIn from './LogIn'
-import InfoEmpleado from './InfoEmpleado'
+import LogIn from "./pages/LogIn"
 
 function App() {
   return (
     <div>
       <LogIn />
-      <Errores />
-      <InfoEmpleado />
     </div>
   )
 }
