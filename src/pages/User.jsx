@@ -5,66 +5,92 @@ import "@fontsource/roboto";
 function VideoStreamClient() {
   const [imageData, setImageData] = useState(null);
   const [stats, setStats] = useState("Conectando al servidor...");
-  const [connected, setConnected] = useState(false);
   const [statusColor, setStatusColor] = useState("text-slate-700");
+  const [conteoActual, setConteoActual] = useState({});
+  const [recetaObjetivo, setRecetaObjetivo] = useState({});
+  const [connected, setConnected] = useState(false);
 
-  // Guarda el color anterior para detectar cambios
-  const prevStatusColor = useRef("text-slate-700");
+  const audioRef = useRef(null);
 
-  // 🔊 Función para reproducir un sonido de alerta
-  const playAlertSound = () => {
-    const audio = new Audio("/alarm.mp3"); // Archivo en /public
-    audio.play().catch((err) =>
-      console.log("No se pudo reproducir el sonido:", err)
+  // Función para comprobar si el conteo está completo
+  const isConteoCompleto = () => {
+    if (!Object.keys(recetaObjetivo).length) return false;
+    return Object.entries(recetaObjetivo).every(
+      ([item, cantidad]) => conteoActual[item] >= cantidad
     );
   };
 
   useEffect(() => {
-    const BACKEND_IP = "10.22.186.200"; // <-- Tu IP del backend
+    audioRef.current = new Audio("/alarm.mp3");
+    audioRef.current.loop = true;
+
+    const BACKEND_IP = "10.22.236.23"; // Cambia a tu IP
     const PORT = 5001;
     const socket = io(`http://${BACKEND_IP}:${PORT}`);
 
     socket.on("connect", () => {
-      setStats("✅ Conectado. Esperando datos...");
+      setStats();
       setConnected(true);
     });
 
     socket.on("video_stream", (data) => {
       if (data.image_data) setImageData(data.image_data);
       if (data.stats) setStats(data.stats);
+      if (data.conteo_actual) setConteoActual(data.conteo_actual);
+      if (data.receta_objetivo) setRecetaObjetivo(data.receta_objetivo);
 
       let newColor = "text-slate-700";
-
       if (data.status_color === "rojo") newColor = "text-red-600";
       else if (data.status_color === "verde") newColor = "text-green-600";
+      else if (data.status_color === "amarillo") newColor = "text-yellow-500";
 
-      // 🚨 Solo reproducir si el color cambia de otro a "rojo"
-      if (
-        newColor === "text-red-600" &&
-        prevStatusColor.current !== "text-red-600"
-      ) {
-        playAlertSound();
+      if (newColor === "text-red-600") {
+        if (audioRef.current.paused) {
+          audioRef.current.play().catch((err) =>
+            console.log("No se pudo reproducir el sonido:", err)
+          );
+        }
+      } else {
+        if (!audioRef.current.paused) {
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+        }
       }
 
-      // Actualiza el color actual y el anterior
       setStatusColor(newColor);
-      prevStatusColor.current = newColor;
     });
 
     socket.on("disconnect", () => {
       setStats("❌ Desconectado del servidor.");
       setConnected(false);
       setStatusColor("text-red-600");
+      if (!audioRef.current.paused) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
     });
 
-    return () => socket.disconnect();
+    return () => {
+      socket.disconnect();
+      if (audioRef.current) audioRef.current.pause();
+    };
   }, []);
 
+  // Si conteo completo, mostrar solo pantalla blanca con "SIGUIENTE"
+  if (isConteoCompleto()) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center bg-white">
+        <h1 className="text-black text-6xl font-bold">BANDEJA COMPLETA</h1>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row items-center justify-center gap-10 p-8 bg-white from-slate-50 via-slate-100 to-slate-300 font-roboto transition-all duration-700">
+    <div className="min-h-screen flex flex-col lg:flex-row items-center justify-center gap-10 p-4 lg:p-8 bg-white font-roboto transition-all duration-700">
+
       {/* Contenedor de la cámara */}
-      <div className="flex flex-col items-center justify-center bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl w-full lg:w-3/4 p-6 lg:p-10 border border-slate-200">
-        <div className="overflow-hidden rounded-3xl w-full max-h-[75vh] shadow-lg border border-slate-200 transition-all duration-500 hover:scale-[1.01] hover:shadow-xl">
+      <div className="flex flex-col items-center justify-center bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl w-full lg:w-3/4 p-4 lg:p-8 border border-slate-200">
+        <div className="w-full h-[75vh] rounded-3xl overflow-hidden shadow-lg border border-slate-200">
           <img
             src={
               imageData
@@ -72,7 +98,7 @@ function VideoStreamClient() {
                 : "https://placehold.co/800x600?text=Esperando+stream..."
             }
             alt={connected ? "Stream activo" : "Desconectado"}
-            className="w-full h-auto object-cover"
+            className="w-full h-full object-cover object-center"
           />
         </div>
 
@@ -84,7 +110,7 @@ function VideoStreamClient() {
       </div>
 
       {/* Panel lateral */}
-      <div className="w-full lg:w-1/4 bg-white/90 backdrop-blur-lg shadow-xl rounded-3xl p-8 flex flex-col items-center justify-center border border-slate-200 hover:shadow-2xl transition-all duration-500">
+      <div className="w-full lg:w-1/4 bg-white/90 backdrop-blur-lg shadow-xl rounded-3xl p-6 lg:p-8 flex flex-col items-center justify-start border border-slate-200 hover:shadow-2xl transition-all duration-500">
         <h3 className="text-2xl font-semibold text-slate-800 mb-4">
           Estado del sistema
         </h3>
@@ -104,6 +130,29 @@ function VideoStreamClient() {
         <p className="mt-2 text-sm text-slate-500">
           {connected ? "Conectado al servidor" : "Sin conexión"}
         </p>
+
+        {/* Conteo de items */}
+        <div className="mt-6 w-full">
+          <h4 className="text-lg font-semibold text-slate-700 mb-2">Conteo Actual</h4>
+          {Object.keys(conteoActual).length > 0 ? (
+            <ul className="font-mono text-slate-800 text-left space-y-1">
+              {Object.entries(conteoActual).map(([item, cantidad]) => (
+                <li
+                  key={item}
+                  className={
+                    recetaObjetivo[item] && cantidad >= recetaObjetivo[item]
+                      ? "text-green-600"
+                      : "text-yellow-500"
+                  }
+                >
+                  {item}: {cantidad} / {recetaObjetivo[item] || "-"}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-slate-400 italic">No se detectan items aún</p>
+          )}
+        </div>
       </div>
     </div>
   );
