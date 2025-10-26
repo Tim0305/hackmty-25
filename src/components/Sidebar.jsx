@@ -4,14 +4,21 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 function Sidebar({ open, onClose, onClickItem }) {
-  const options = ["Empleados", "Productos"];
+  const options = ["Dashboard", "Empleados", "Productos"];
+  const navigate = useNavigate()
 
   const handleOptionClick = (option) => {
-    onClickItem(option);
+    if (onClickItem)
+      onClickItem(option);
     if (onClose)
       onClose()
+    if(option === "Dashboard") navigate("/manager")
+    else if(option === "Empleados") navigate("/manager/employees");
+    else if(option === "Productos") navigate("/manager/products");
+    else if(option === "Sign Out") navigate("/login");
   };
 
   const list = () => (
