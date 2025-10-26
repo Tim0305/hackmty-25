@@ -13,13 +13,19 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@fontsource/roboto": "^5.2.8",
+    "@mui/icons-material": "^7.3.4",
     "@mui/material": "^7.3.4",
+    "@mui/x-charts": "^8.15.0",
     "@tailwindcss/vite": "^4.1.16",
     "express": "^5.1.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+<<<<<<< HEAD
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
+=======
+    "recharts": "^3.3.0",
+>>>>>>> 4b4afb05353b4a6fce0e7d8b7b352fd8917605de
     "tailwindcss": "^4.1.16"
   },
   "devDependencies": {
