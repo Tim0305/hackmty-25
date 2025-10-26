@@ -47,7 +47,7 @@ export default function Manager() {
 
         <div className="flex flex-col pr-10 pb-10 pl-10">
           <h1 className="text-orange-500 text-6xl font-bold mb-15 ml-1 md:ml-0">
-            Bienvenido!
+            Bienvenido, Víctor!
           </h1>
 
           <div className="flex flex-col md:flex-row gap-10">
