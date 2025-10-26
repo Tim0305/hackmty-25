@@ -57,7 +57,6 @@ function VideoStreamClient() {
         )}
       </div>
 
-<<<<<<< HEAD
       {/* Columna derecha: Mensaje de error */}
       <div className="w-1/4 flex flex-col items-center justify-center bg-white rounded-2xl shadow-md p-6 text-center">
         <h2 className="text-slate-950 text-4xl font-bold mb-4 animate-pulse">
@@ -67,7 +66,6 @@ function VideoStreamClient() {
           Faltan 2 canelitas
         </p>
         <p className={`font-mono ${statusColor} text-lg`}>{stats}</p>
-=======
         {/* Imagen centrada */}
         <div className="flex justify-center mb-6 lg:mb-8">
           <img
@@ -81,7 +79,6 @@ function VideoStreamClient() {
         <div className="text-center text-red-600 font-semibold text-lg md:text-xl lg:text-2xl mt-4 lg:mt-6">
           <p>Falta 1 paquete</p>
         </div>
->>>>>>> 4b4afb05353b4a6fce0e7d8b7b352fd8917605de
       </div>
     </div>
   );

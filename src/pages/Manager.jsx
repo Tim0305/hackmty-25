@@ -16,11 +16,11 @@ export default function Manager() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const data = [
-    { day: "Lunes", errors: 5 },
-    { day: "Martes", errors: 3 },
-    { day: "Miércoles", errors: 6 },
-    { day: "Jueves", errors: 2 },
-    { day: "Viernes", errors: 4 },
+    { day: "Lunes", errors: 50 },
+    { day: "Martes", errors: 70 },
+    { day: "Miércoles", errors: 30 },
+    { day: "Jueves", errors: 10 },
+    { day: "Viernes", errors: 2 },
   ];
 
   return (
@@ -69,7 +69,7 @@ export default function Manager() {
                     Errores hoy
                   </Typography>
                   <Typography variant="h2" className="text-red-600 !font-bold">
-                    15
+                    1
                   </Typography>
                 </CardContent>
               </Card>
