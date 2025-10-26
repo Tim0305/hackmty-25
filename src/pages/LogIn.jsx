@@ -39,7 +39,7 @@ function LogIn() {
           {/* Botón */}
           <button
             type="submit"
-            className="mt-4 w-full py-2 bg-slate-950 text-white font-semibold rounded-lg hover:bg-white hover:text-black transition-all"
+            className="mt-4 w-full py-2 bg-slate-950 text-white font-semibold rounded-lg hover:bg-white hover:text-black transition-all cursor-pointer"
           >
             Entrar
           </button>
