@@ -23,12 +23,12 @@ function Errores() {
 
         {/* Imagen centrada */}
         <div className="flex justify-center mb-6 lg:mb-8">
-  <img
-    className="w-full max-w-lg h-auto rounded-lg shadow-md object-contain"
-    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsB8NKORD4j_knDUWeGVucC3wxIgXBlMu0Pw&s"
-    alt="Vista cámara"
-  />
-</div>
+          <img
+            className="w-full max-w-lg h-auto rounded-lg shadow-md object-contain"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsB8NKORD4j_knDUWeGVucC3wxIgXBlMu0Pw&s"
+            alt="Vista cámara"
+          />
+        </div>
 
         {/* Texto de error debajo de la imagen */}
         <div className="text-center text-red-600 font-semibold text-lg md:text-xl lg:text-2xl mt-4 lg:mt-6">
